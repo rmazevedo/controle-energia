@@ -1,34 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_POSTGRESQL",
-      "label": "PostgreSQL",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "postgres",
-      "pluginName": "PostgreSQL"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.0.2"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": "5.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "postgres",
-      "name": "PostgreSQL",
-      "version": "5.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -45,65 +15,438 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
+  "id": 2,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_POSTGRESQL}",
-      "fill": 1,
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#FF780A"
+      ],
+      "datasource": "PostgreSQL",
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 5,
+        "w": 5,
         "x": 0,
         "y": 0
       },
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [
+            {
+              "params": [
+                "1h",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(consumo_total)/1000) AS \"consumo mensal\"\nFROM consumo_watts_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "consumo_watts_labsoft",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "datatype": "timestamptz",
+              "name": "",
+              "params": [
+                "time",
+                ">=",
+                "date_trunc('month', now()) - interval '1 month'"
+              ],
+              "type": "expression"
+            },
+            {
+              "datatype": "timestamptz",
+              "name": "",
+              "params": [
+                "time",
+                "<",
+                "date_trunc('month', now())"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Consumo Total no Último Mês (kWh)",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        },
+        {
+          "op": "=",
+          "text": "d",
+          "value": "d"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPostfix": false,
+      "colorPrefix": true,
+      "colorValue": true,
+      "colors": [
+        "#FADE2A",
+        "#C4162A",
+        "#FADE2A"
+      ],
+      "datasource": "PostgreSQL",
+      "decimals": null,
+      "description": "Valor estimado",
+      "format": "short",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 5,
+        "y": 0
+      },
+      "id": 5,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "R$",
+      "prefixFontSize": "100%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "custo",
+      "targets": [
+        {
+          "format": "table",
+          "group": [
+            {
+              "params": [
+                "1h",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\")  * 0.42880 as Custo FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(consumo_total)/1000) AS \"consumo mensal\"\nFROM consumo_watts_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "consumo_watts_labsoft",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "datatype": "timestamptz",
+              "name": "",
+              "params": [
+                "time",
+                ">=",
+                "date_trunc('month', now()) - interval '1 month'"
+              ],
+              "type": "expression"
+            },
+            {
+              "datatype": "timestamptz",
+              "name": "",
+              "params": [
+                "time",
+                "<",
+                "date_trunc('month', now())"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Custo da Energia no Último Mês ",
+      "type": "singlestat",
+      "valueFontSize": "150%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {
+        "consumo_total": "semi-dark-yellow",
+        "custo": "dark-red"
+      },
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "PostgreSQL",
+      "fill": 0,
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "hideTimeOverride": false,
       "id": 2,
+      "interval": "",
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
         "max": false,
         "min": false,
         "show": true,
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
-      "nullPointMode": "null",
+      "links": [],
+      "nullPointMode": "connected",
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "custo",
+          "bars": false,
+          "pointradius": 2,
+          "points": true,
+          "yaxis": 2
+        }
+      ],
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
           "format": "time_series",
-          "group": [],
+          "group": [
+            {
+              "params": [
+                "1h",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time_bucket('01:00:00'::interval, consumo_watts_labsoft.\"time\") AS time,\n    (avg(consumo_watts_labsoft.consumo_total) / 1000::numeric * 0.42880)::double precision AS media\n   FROM consumo_watts_labsoft\n  GROUP BY (time_bucket('01:00:00'::interval, consumo_watts_labsoft.\"time\"))\n  ORDER BY (time_bucket('01:00:00'::interval, consumo_watts_labsoft.\"time\")) DESC\n LIMIT 24;",
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",1h),\n  avg(consumo_total)/1000 AS \"consumo_total\"\nFROM consumo_watts_labsoft\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
               {
                 "params": [
-                  "processador"
+                  "consumo_total"
                 ],
                 "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "table": "metricas",
+          "table": "consumo_watts_labsoft",
           "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "1h",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(consumo_total)/1000)* 0.42880 AS \"custo\"\nFROM consumo_watts_labsoft\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "consumo_total"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "consumo_watts_labsoft",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
           "where": [
             {
               "name": "$__timeFilter",
@@ -117,7 +460,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Consumo Total (kWh) e Custo (R$)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -133,7 +476,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "kwatth",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -141,7 +484,7 @@
           "show": true
         },
         {
-          "format": "short",
+          "format": "currencyBRL",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -155,6 +498,7 @@
       }
     }
   ],
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -193,5 +537,5 @@
   "timezone": "",
   "title": "Controle de Energia Supermarket",
   "uid": "236DZxemk",
-  "version": 1
+  "version": 9
 }
