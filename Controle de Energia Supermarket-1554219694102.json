@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -37,8 +37,8 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 5,
-        "w": 5,
+        "h": 6,
+        "w": 4,
         "x": 0,
         "y": 0
       },
@@ -91,33 +91,21 @@
           ],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(consumo_total)/1000) AS \"consumo mensal\"\nFROM consumo_watts_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM (SELECT med_labsoft.\"time\",\n    med_labsoft.total AS valor\n   FROM med_labsoft\n  ORDER BY med_labsoft.\"time\"\n) as consumo_watts_ar_cond_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
           "refId": "A",
           "select": [
             [
               {
                 "params": [
-                  "consumo_total"
+                  "processador"
                 ],
                 "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "consumo_total"
-                ],
-                "type": "alias"
               }
             ]
           ],
-          "table": "consumo_watts_labsoft",
+          "table": "metricas",
           "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
+          "timeColumnType": "timestamp",
           "where": [
             {
               "datatype": "timestamptz",
@@ -185,7 +173,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 5,
+        "h": 7,
         "w": 4,
         "x": 5,
         "y": 0
@@ -306,6 +294,214 @@
       "valueName": "avg"
     },
     {
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#b4ff00",
+        "colorScale": "sqrt",
+        "colorScheme": "interpolateRdYlGn",
+        "exponent": 0.5,
+        "mode": "opacity"
+      },
+      "dataFormat": "timeseries",
+      "description": "Dados do último Mês",
+      "gridPos": {
+        "h": 7,
+        "w": 15,
+        "x": 9,
+        "y": 0
+      },
+      "heatmap": {},
+      "hideTimeOverride": true,
+      "highlightCards": true,
+      "id": 17,
+      "interval": "1h",
+      "legend": {
+        "show": false
+      },
+      "links": [],
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "1h",
+                "NULL"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",1h,NULL),\n  avg(total) AS \"total\"\nFROM med_labsoft\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "total"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "total"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "med_labsoft",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Variação do Consumo Total (kWh) ",
+      "tooltip": {
+        "show": true,
+        "showHistogram": false
+      },
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": null,
+      "xBucketSize": null,
+      "yAxis": {
+        "decimals": null,
+        "format": "kwatth",
+        "logBase": 1,
+        "max": null,
+        "min": null,
+        "show": true,
+        "splitFactor": null
+      },
+      "yBucketBound": "auto",
+      "yBucketNumber": null,
+      "yBucketSize": null
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 6
+      },
+      "id": 11,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM (SELECT med_labsoft.\"time\",\n    med_labsoft.ar_cond AS valor\n   FROM med_labsoft\n  ORDER BY med_labsoft.\"time\"\n) as consumo_watts_ar_cond_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "processador"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metricas",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Refrigeração de Produtos",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
       "aliasColors": {
         "consumo_total": "semi-dark-yellow",
         "custo": "dark-red"
@@ -316,10 +512,10 @@
       "datasource": "PostgreSQL",
       "fill": 0,
       "gridPos": {
-        "h": 12,
-        "w": 24,
-        "x": 0,
-        "y": 5
+        "h": 18,
+        "w": 19,
+        "x": 5,
+        "y": 7
       },
       "hideTimeOverride": false,
       "id": 2,
@@ -496,6 +692,420 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 12
+      },
+      "id": 7,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM consumo_watts_bancadas_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "processador"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metricas",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Ar condicionado",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 18
+      },
+      "id": 13,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM (SELECT med_labsoft.\"time\",\n    med_labsoft.rede AS valor\n   FROM med_labsoft\n  ORDER BY med_labsoft.\"time\"\n) as consumo_watts_rede_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "processador"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metricas",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Iluminação",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 24
+      },
+      "id": 9,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM consumo_watts_iluminacao_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "processador"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metricas",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Computadores",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "description": "Balanças, Consultor de Preço, Fatiador de Frios e Carregador de Máquinas de Cartão",
+      "format": "kwatth",
+      "gauge": {
+        "maxValue": 1000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 30
+      },
+      "id": 15,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "sum",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT SUM(\"consumo mensal\") FROM (\nSELECT\n  $__timeGroupAlias(\"time\",1h),\n  (avg(valor)/1000) AS \"consumo mensal\"\nFROM (SELECT med_labsoft.\"time\",\n    med_labsoft.servidor AS valor\n   FROM med_labsoft\n  ORDER BY med_labsoft.\"time\"\n) as consumo_watts_servidor_labsoft\nWHERE\n  time >= date_trunc('month', now()) - interval '1 month' AND\n  time < date_trunc('month', now())\nGROUP BY 1\nORDER BY 1\n) AS C",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "processador"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "metricas",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Outros",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
     }
   ],
   "refresh": false,
@@ -537,5 +1147,5 @@
   "timezone": "",
   "title": "Controle de Energia Supermarket",
   "uid": "236DZxemk",
-  "version": 9
+  "version": 11
 }
